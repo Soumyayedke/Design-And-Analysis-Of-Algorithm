@@ -584,3 +584,233 @@ int main() {
 
 	return 0;
 }
+
+
+
+
+
+
+
+
+1.1.9. Fractional Knapsack Problem
+
+
+# include<stdio.h>
+void knapsack(int n, float weight[], float profit[], float capacity) {
+	float total_profit = 0.0;
+	int i;
+
+	for (i = 0; i < n; i++) {
+		if (capacity == 0) {
+			break;
+		}
+		if (weight[i] <= capacity) {
+			capacity -= weight[i];
+			total_profit += profit[i];
+		} else {
+			total_profit += profit[i] * (capacity / weight[i]);
+			capacity = 0;
+		}
+	}
+
+	printf("Maximum profit is:- %.6f\n", total_profit);
+
+
+
+
+
+1.1.10. Floyd - Warshall's Algorithm
+
+
+#include <stdio.h>
+#define INF 99999
+#define MAX_N 20 // Maximum value for N
+void floydWarshall(int graph[MAX_N][MAX_N], int n) {
+	int dist[MAX_N][MAX_N], i, j, k;
+
+	for (i = 0; i < n; i++) {
+		for (j = 0; j < n; j++) {
+			dist[i][j] = graph[i][j];
+		}
+	}
+
+	for (k = 0; k < n; k++) {
+		for (i = 0; i < n; i++) {
+			for (j = 0; j < n; j++) {
+				if (dist[i][k] != INF && dist[k][j] != INF && 
+					dist[i][k] + dist[k][j] < dist[i][j]) {
+					dist[i][j] = dist[i][k] + dist[k][j];
+				}
+			}
+		}
+	}
+
+	printf("The following matrix shows the shortest distances between all pairs of the vertices.\n");
+	for (i = 0; i < n; i++) {
+		for (j = 0; j < n; j++) {
+			if (dist[i][j] == INF)
+				printf("  INF");
+			else
+				printf(  "  %3d", dist[i][j]);
+		}
+		printf("\n");
+	}
+}
+
+int main() {
+	int graph[MAX_N][MAX_N];
+	int n, e, i, j;
+
+	printf("Enter the number of vertices : ");
+	scanf("%d", &n);
+
+	printf("Enter the number of edges : ");
+	scanf("%d", &e);
+
+	for (i = 0; i < n; i++) {
+		for (j = 0; j < n; j++) {
+			if (i == j)
+				graph[i][j] = 0;
+			else
+				graph[i][j] = INF;
+		}
+	}
+
+	for (i = 0; i < e; i++) {
+		int u, v, w;
+		printf("Enter source : ");
+		scanf("%d", &u);
+		printf("Enter destination : ");
+		scanf("%d", &v);
+		printf("Enter weight : ");
+		scanf("%d", &w);
+		graph[u - 1][v - 1] = w;
+	}
+
+	floydWarshall(graph, n);
+
+	return 0;
+}
+
+
+
+
+
+1.1.11. Optimal Merge Pattern
+
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+// Function to Sort the files in ascending order, perform optimal file merging and return the minimum cost
+int optimalMerge(int files[], int n) {
+    int totalCost = 0;
+
+	while(n > 1) {
+		for(int i = 0; i < n - 1; i++) {
+			for(int j = 0; j < n - i - 1; j++) {
+				if(files[j] > files[j + 1]) {
+					int tmp = files[j];
+					files[j] = files[j + 1];
+					files[j + 1] = tmp;
+				}
+			}
+		}
+
+
+		int mergedSize = files[0] + files[1];
+		totalCost += mergedSize;
+
+		files[0] = mergedSize;
+
+		for(int i = 1; i < n - 1; i++) {
+			files[i] = files[i + 1];
+		 }
+			 n--;
+			 }
+	return totalCost;
+    
+        
+}
+
+int main() {
+    int n;
+    printf("Number of files: ");
+    scanf("%d", &n);
+    int *files = (int *)malloc(n * sizeof(int));
+    printf("Enter the sizes of %d files: ", n);
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &files[i]);
+    }
+    int minCost = optimalMerge(files, n);
+    printf("Minimum cost of merging is: %d\n", minCost);
+    free(files);
+    return 0;
+}
+
+
+
+
+
+
+1.1.12. N Queens Problem
+
+
+#include <stdio.h>
+#include <stdbool.h>
+
+#define MAX 10
+
+int solutionCount = 0;
+
+
+bool isSafe(int board[MAX][MAX], int row, int col, int n) {
+    int i, j;
+
+
+    for (i = 0; i < row; i++)
+        if (board[i][col])
+            return false;
+
+
+    for (i = row, j = col; i >= 0 && j >= 0; i--, j--)
+        if (board[i][j])
+            return false;
+
+
+    for (i = row, j = col; i >= 0 && j < n; i--, j++)
+        if (board[i][j])
+            return false;
+
+    return true;
+}
+
+void solveNQ(int board[MAX][MAX], int row, int n) {
+    if (row == n) {
+        solutionCount++;
+        return;
+	}
+
+    for (int col = 0; col < n; col++) {
+        if (isSafe(board, row, col, n)) {
+            board[row][col] = 1;
+            solveNQ(board, row + 1, n);
+            board[row][col] = 0; // backtrack
+        }
+    }
+}
+
+int nQueen(int n) {
+    int board[MAX][MAX] = {0};
+    solutionCount = 0;
+    solveNQ(board, 0, n);
+    return solutionCount;
+}
+
+int main() {
+    int n;
+    scanf("%d", &n);
+    printf("%d\n", nQueen(n));
+    return 0;
+}
