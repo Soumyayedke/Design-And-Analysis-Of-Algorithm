@@ -16,13 +16,7 @@ void knapsack(int n, float weight[], float profit[], float capacity) {
 		}
 	}
 
-	printf("Maximum profit is:- %.6f\n", total_profit);
-  
-  
-  
-  
-  
-  
+	printf("Maximum profit is:- %.6f\n", total_profit); 
 }
 
 int main() {
